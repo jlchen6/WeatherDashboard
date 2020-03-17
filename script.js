@@ -3,6 +3,7 @@ $(document).ready(function() {
   $("#search-button").on("click", function() {
     // Grab the text from the input box
     var searchValue = $("#search-value").val();
+    searchValue = titleCase(searchValue);
 
     // clear input box
     $("#search-value").val("");
@@ -73,6 +74,13 @@ $(document).ready(function() {
         getForecast(searchValue);
         // Call a function to display the UV Index
         getUVIndex(data.coord.lat, data.coord.lon);
+      },
+      // Added code to alert user if they entered an invalid search term.
+      error: function (jqXHR, exception){
+        // If the error was because of a 404: not found error, alert the user.
+        if(jqXHR.status === 404){
+          alert("Could not find that city! Please try entering another one.");
+        }
       }
     });
   }
@@ -141,6 +149,15 @@ $(document).ready(function() {
         $("#today .card-body").append(uv.append(btn));
       }
     });
+  }
+
+  // Create function to format input so that it's titleCase, where only the first character is uppercase.
+  function titleCase(city){
+    // Set the entire string to lowercase
+    var lower = city.toLowerCase();
+    // Then set just the first character to uppercase and append the rest.
+    var formatted = lower.charAt(0).toUpperCase() + lower.slice(1);
+    return formatted;
   }
 
   // get current history, if any
